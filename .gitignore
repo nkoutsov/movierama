@@ -1,0 +1,24 @@
+# Python files
+__pycache__/
+*.py[cod]
+
+# Local development files
+env/
+*.sqlite
+*.db
+
+# IDE/Editor specific files
+.idea/
+.vscode/
+*.swp
+
+# Compiled files
+*.pyc
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+.venv/

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Movies{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('movies.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<p>Sort by:
+    <a href="{{ url_for('index', sort='likes_count') }}">Likes</a> |
+    <a href="{{ url_for('index', sort='hates_count') }}">Hates</a> |
+    <a href="{{ url_for('index', sort='date_of_publication') }}">Date</a>
+</p>
+  {% for movie in movies %}
+  <article class="post">
+    <header>
+        <div>
+            <h1>{{ movie.title }}</h1>
+            <div class="about">by <a href="{{ url_for('movies.movies_from_user', username=movie.user.username)}}"> {{ movie.user.username }} </a> on {{movie.date_of_publication.strftime('%Y-%m-%d') }}</div>
+        </div>
+    </header>
+    <p class="body">{{ movie.description }}</p>
+    {% if current_user != movie.user %}
+        <form method="GET" action="{{ url_for('movies.toggle_like_movie', id=movie.id) }}">
+            <button class="like-button {% if movie in current_user.liked_movies %}liked-button{% endif %}"
+                    {% if current_user and current_user.id == movie.user.id %}
+                        disabled
+                    {% endif %}>
+                Like {{ movie.likes_count}}
+            </button>
+        </form>
+
+        <form method="GET" action="{{ url_for('movies.toggle_hate_movie', id=movie.id) }}">
+            <button class="like-button {% if movie in current_user.hated_movies %}hated-button{% endif %}"
+                    {% if current_user and current_user.id == movie.user.id %}
+                        disabled
+                    {% endif %}>
+                Hate {{ movie.hates_count}}
+            </button>
+        </form>
+    {% endif %}
+</article>
+{% if not loop.last %}
+      <hr>
+{% endif %}
+{% endfor %}
+{% endblock %}
